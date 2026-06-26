@@ -70,25 +70,34 @@
 
 						{#if feedbackData}
 							{@const messageId = feedbackData?.meta?.message_id}
-							{@const messages = feedbackData?.snapshot?.chat?.chat?.history.messages}
+							{@const messages = feedbackData?.snapshot?.chat?.chat?.history?.messages}
 
-							{#if messages[messages[messageId]?.parentId]}
-								<div class="flex flex-col w-full mb-2">
-									<div class="mb-1 text-xs text-gray-500">{$i18n.t('Prompt')}</div>
+							{#if messages}
+								{#if messages[messages[messageId]?.parentId]}
+									<div class="flex flex-col w-full mb-2">
+										<div class="mb-1 text-xs text-gray-500">{$i18n.t('Prompt')}</div>
 
-									<div class="flex-1 text-xs whitespace-pre-line break-words">
-										<span>{messages[messages[messageId]?.parentId]?.content || '-'}</span>
+										<div class="flex-1 text-xs whitespace-pre-line break-words">
+											<span>{messages[messages[messageId]?.parentId]?.content || '-'}</span>
+										</div>
 									</div>
-								</div>
-							{/if}
+								{/if}
 
-							{#if messages[messageId]}
+								{#if messages[messageId]}
+									<div class="flex flex-col w-full mb-2">
+										<div class="mb-1 text-xs text-gray-500">{$i18n.t('Response')}</div>
+										<div
+											class="flex-1 text-xs whitespace-pre-line break-words max-h-32 overflow-y-auto"
+										>
+											<span>{messages[messageId]?.content || '-'}</span>
+										</div>
+									</div>
+								{/if}
+							{:else}
 								<div class="flex flex-col w-full mb-2">
-									<div class="mb-1 text-xs text-gray-500">{$i18n.t('Response')}</div>
-									<div
-										class="flex-1 text-xs whitespace-pre-line break-words max-h-32 overflow-y-auto"
-									>
-										<span>{messages[messageId]?.content || '-'}</span>
+									<div class="mb-1 text-xs text-gray-500">{$i18n.t('Snapshot')}</div>
+									<div class="flex-1 text-xs text-gray-400 italic">
+										{$i18n.t('Chat snapshot not available')}
 									</div>
 								</div>
 							{/if}
