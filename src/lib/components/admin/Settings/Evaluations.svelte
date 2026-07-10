@@ -121,6 +121,10 @@
 						/>
 					</Tooltip>
 				</AdminSettingRow>
+
+				<AdminSettingRow label={$i18n.t('Feedback Chat Snapshot')}>
+					<Switch bind:state={evaluationConfig.ENABLE_FEEDBACK_CHAT_SNAPSHOT} />
+				</AdminSettingRow>
 			</AdminSettingSection>
 
 			{#if evaluationConfig.ENABLE_EVALUATION_ARENA_MODELS}

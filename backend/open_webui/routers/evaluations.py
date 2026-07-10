@@ -30,6 +30,7 @@ router = APIRouter()
 EVALUATION_CONFIG_KEYS = {
     'ENABLE_EVALUATION_ARENA_MODELS': 'evaluation.arena.enable',
     'EVALUATION_ARENA_MODELS': 'evaluation.arena.models',
+    'ENABLE_FEEDBACK_CHAT_SNAPSHOT': 'feedback.enable_chat_snapshot',
 }
 
 
@@ -278,6 +279,7 @@ async def get_config(request: Request, user=Depends(get_admin_user)):
 class UpdateConfigForm(BaseModel):
     ENABLE_EVALUATION_ARENA_MODELS: Optional[bool] = None
     EVALUATION_ARENA_MODELS: Optional[list[dict]] = None
+    ENABLE_FEEDBACK_CHAT_SNAPSHOT: Optional[bool] = None
 
 
 @router.post('/config')
@@ -291,6 +293,8 @@ async def update_config(
         updates['evaluation.arena.enable'] = form_data.ENABLE_EVALUATION_ARENA_MODELS
     if form_data.EVALUATION_ARENA_MODELS is not None:
         updates['evaluation.arena.models'] = form_data.EVALUATION_ARENA_MODELS
+    if form_data.ENABLE_FEEDBACK_CHAT_SNAPSHOT is not None:
+        updates['feedback.enable_chat_snapshot'] = form_data.ENABLE_FEEDBACK_CHAT_SNAPSHOT
     await Config.upsert(updates)
     values = await get_config_values(EVALUATION_CONFIG_KEYS)
     await publish_event(
@@ -412,6 +416,9 @@ async def create_feedback(
     user=Depends(get_verified_user),
     db: AsyncSession = Depends(get_async_session),
 ):
+    if not await Config.get('feedback.enable_chat_snapshot', True):
+        form_data.snapshot = None
+
     feedback = await Feedbacks.insert_new_feedback(user_id=user.id, form_data=form_data, db=db)
     if not feedback:
         raise HTTPException(
@@ -450,6 +457,9 @@ async def update_feedback_by_id(
     user=Depends(get_verified_user),
     db: AsyncSession = Depends(get_async_session),
 ):
+    if not await Config.get('feedback.enable_chat_snapshot', True):
+        form_data.snapshot = None
+
     if user.role == 'admin':
         feedback = await Feedbacks.update_feedback_by_id(id=id, form_data=form_data, db=db)
     else:

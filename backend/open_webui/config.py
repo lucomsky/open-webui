@@ -2058,6 +2058,8 @@ except Exception as e:
 
 EVALUATION_ARENA_MODELS = evaluation_arena_models
 
+ENABLE_FEEDBACK_CHAT_SNAPSHOT = os.getenv('ENABLE_FEEDBACK_CHAT_SNAPSHOT', 'True').lower() == 'true'
+
 DEFAULT_ARENA_MODEL = {
     'id': 'arena-model',
     'name': 'Arena Model',
@@ -3106,6 +3108,7 @@ DEFAULT_CONFIG = {
     'users.enable_status': ENABLE_USER_STATUS,
     'evaluation.arena.enable': ENABLE_EVALUATION_ARENA_MODELS,
     'evaluation.arena.models': EVALUATION_ARENA_MODELS,
+    'feedback.enable_chat_snapshot': ENABLE_FEEDBACK_CHAT_SNAPSHOT,
     'webhook_url': WEBHOOK_URL,
     'ui.enable_community_sharing': ENABLE_COMMUNITY_SHARING,
     'ui.enable_message_rating': ENABLE_MESSAGE_RATING,
